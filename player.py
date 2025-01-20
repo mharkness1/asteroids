@@ -8,21 +8,17 @@ class Player(CircleShape):
         super().__init__(x ,y, PLAYER_RADIUS)
         self.rotation = 0.0
         self._triangle_points = None
-        self._last_rotation = None
 
     def triangle(self):
         # Only calculate if rotation has changed
-        if self._last_rotation != self.rotation:
-
-            forward = pygame.Vector2(0, -1).rotate_rad(self.rotation)
-            right = forward.rotate(90) * self.radius / 1.5
-            a = self.position + forward * self.radius
-            b = self.position - forward * self.radius - right
-            c = self.position - forward * self.radius + right
-            # Saving results
-            self._triangle_points = [a, b, c]
-            # Updating comparison for the main loop
-            self._last_rotation = self.rotation
+        forward = pygame.Vector2(0, -1).rotate_rad(self.rotation)
+        right = forward.rotate(90) * self.radius / 1.5
+        a = self.position + forward * self.radius
+        b = self.position - forward * self.radius - right
+        c = self.position - forward * self.radius + right
+        # Saving results
+        self._triangle_points = [a, b, c]
+        
         # Return cached points
         return self._triangle_points
     
@@ -33,6 +29,10 @@ class Player(CircleShape):
         rotation_speed = math.radians(PLAYER_TURN_SPEED)
         self.rotation += rotation_speed * dt
 
+    def move(self, dt):
+        forward = pygame.Vector2(0, -1).rotate_rad(self.rotation)
+        self.position += forward * PLAYER_SPEED * dt
+
     def update(self, dt):
         keys = pygame.key.get_pressed()
 
@@ -40,3 +40,7 @@ class Player(CircleShape):
             self.rotate(dt * -1)
         if keys[pygame.K_d]:
             self.rotate(dt)
+        if keys[pygame.K_w]:
+            self.move(dt)
+        if keys[pygame.K_s]:
+            self.move(dt * -1)
