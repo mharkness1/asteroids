@@ -7,19 +7,25 @@ def main():
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 	player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
 	clock = pygame.time.Clock()
-	dt = 0
 
 	while True:
+		#limit the framerate 
+		clock.tick(60)
+		dt = 1/60
+
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				return
 			
 		screen.fill("black")
-		pygame.display.flip()
+		player.update(dt)
 		player.draw(screen)
 
-		#limit the framerate 
-		dt = clock.tick(60) / 1000
+		#FPS Calculator
+		fps = clock.get_fps()
+		pygame.display.set_caption(f"FPS: {fps:.2f}")
+
+		pygame.display.flip()
 
 if __name__ == "__main__":
 	main()
